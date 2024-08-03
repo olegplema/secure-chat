@@ -1,0 +1,110 @@
+version: "3.8"
+
+services:
+  config-server:
+    container_name: config_server
+    build:
+      context: ./config-server
+      dockerfile: ./Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      - USER_DB_HOST=user-db
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+    networks:
+      - chat
+
+  discovery:
+    container_name: discovery
+    build:
+      context: ./discovery
+      dockerfile: ./Dockerfile
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+    environment:
+      - CONFIG_HOST=config-server
+      - EUREKA_HOST=discovery
+    depends_on:
+      config-server:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - chat
+
+  gateway:
+    container_name: gateway
+    build:
+      context: ./gateway
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_HOST=config-server
+      - EUREKA_HOST=discovery
+    depends_on:
+      discovery:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - chat
+
+  user-service:
+    container_name: user_service
+    build:
+      context: ./user
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - CONFIG_HOST=config-server
+      - EUREKA_HOST=discovery
+    depends_on:
+      discovery:
+        condition: service_healthy
+      user-db:
+        condition: service_started
+    restart: on-failure
+    networks:
+      - chat
+
+  message-db:
+    container_name: message_db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: message_db
+    volumes:
+      - message_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - chat
+
+  user-db:
+    container_name: user_db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: user_db
+    volumes:
+      - user_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5433"
+    restart: unless-stopped
+    networks:
+      - chat
+
+networks:
+  chat:
+    driver: bridge
+
+volumes:
+  message_data:
+  user_data:
