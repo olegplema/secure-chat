@@ -71,6 +71,17 @@
       <artifactId>grpc-server-spring-boot-starter</artifactId>
       <version>3.1.0.RELEASE</version>
     </dependency>
+    <dependency>
+      <groupId>com.plema.grpc</groupId>
+    	<artifactId>proto</artifactId>
+	    <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>1.6.0.RC1</version>
+    </dependency>
 	</dependencies>
 
 	<dependencyManagement>
