@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package com.plema.grpc;
+
+option java_package = "com.plema.grpc.user";
+option java_multiple_files = true;
+
+message GetUserByIdRequest {
+  string id = 1;
+}
+
+message CreateUserRequest {
+  string pubKey = 1;
+  string username = 2;
+  string email = 3;
+}
+
+message UserResponse {
+  string id = 1;
+  string pubKey = 2;
+  string username = 3;
+  string email = 4;
+}
+
+service UserService {
+  rpc createUser(CreateUserRequest) returns (UserResponse);
+  rpc getUserById(GetUserByIdRequest) returns (UserResponse);
+}

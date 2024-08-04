@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cityscore;
+package com.plema.grpc;
 
 option java_package = "com.plema.grpc.auth";
 option java_multiple_files = true;

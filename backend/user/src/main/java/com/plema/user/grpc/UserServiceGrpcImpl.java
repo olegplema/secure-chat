@@ -1,20 +1,22 @@
 package com.plema.user.grpc;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.plema.grpc.user.CreateUserRequest;
+import com.plema.grpc.user.GetUserByIdRequest;
+import com.plema.grpc.user.UserServiceGrpc.UserServiceImplBase;
+import com.plema.grpc.user.UserResponse;
 import com.plema.user.entities.User;
-import com.plema.user.mappers.UserRequestMapper;
-import com.plema.user.mappers.UserResponseMapper;
+import com.plema.user.mappers.CreateUserRequestMapper;
+import com.plema.user.mappers.CreateUserResponseMapper;
 import com.plema.user.services.interfaces.UserService;
 
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
-
-import com.plema.grpc.user.CreateUserRequest;
-import com.plema.grpc.user.CreateUserResponse;
-import com.plema.grpc.user.UserServiceGrpc.UserServiceImplBase;
-import io.grpc.Status;
 
 @GrpcService
 public class UserServiceGrpcImpl extends UserServiceImplBase {
@@ -23,13 +25,13 @@ public class UserServiceGrpcImpl extends UserServiceImplBase {
     private UserService userService;
 
     @Autowired
-    private UserRequestMapper requestMapper;
+    private CreateUserRequestMapper requestMapper;
 
     @Autowired
-    private UserResponseMapper responseMapper;
+    private CreateUserResponseMapper responseMapper;
 
     @Override
-    public void createUser(CreateUserRequest request, StreamObserver<CreateUserResponse> responseObserver) {
+    public void createUser(CreateUserRequest request, StreamObserver<UserResponse> responseObserver) {
         try {
             User user = requestMapper.toEntity(request);
             User createdUser = userService.createUser(user);
@@ -43,4 +45,21 @@ public class UserServiceGrpcImpl extends UserServiceImplBase {
             responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
         }
     }
+
+    @Override
+    public void getUserById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
+        try {
+            UUID id = UUID.fromString(request.getId());
+            User foundUser = userService.getById(id);
+
+            responseObserver.onNext(responseMapper.toDto(foundUser));
+            responseObserver.onCompleted();
+        } catch (ResponseStatusException e) {
+            Status status = Status.NOT_FOUND.withDescription(e.getReason());
+            responseObserver.onError(status.asRuntimeException());
+        } catch (Exception e) {
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
+    }
+
 }

@@ -6,14 +6,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-import com.plema.grpc.user.CreateUserResponse;
+import com.plema.grpc.user.UserResponse;
 import com.plema.user.entities.User;
 
 @Mapper(componentModel = "spring")
-public interface UserResponseMapper extends Mapable<User, CreateUserResponse> {
+public interface CreateUserResponseMapper extends Mapable<User, UserResponse> {
 
     @Mapping(source = "id", target = "id", qualifiedByName = "uuidToString")
-    CreateUserResponse toDto(User user);
+    UserResponse toDto(User user);
 
     @Named("uuidToString")
     default String mapUUIDToString(UUID uuid) {
