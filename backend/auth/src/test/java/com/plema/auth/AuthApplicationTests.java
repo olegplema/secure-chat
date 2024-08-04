@@ -1,10 +1,10 @@
-package com.plema.proto;
+package com.plema.auth;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProtoApplicationTests {
+class AuthApplicationTests {
 
 	@Test
 	void contextLoads() {

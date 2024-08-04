@@ -1,13 +1,13 @@
-package com.plema.proto;
+package com.plema.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProtoApplication {
+public class AuthApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProtoApplication.class, args);
+		SpringApplication.run(AuthApplication.class, args);
 	}
 
 }
