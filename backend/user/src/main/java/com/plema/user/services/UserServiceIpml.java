@@ -29,35 +29,15 @@ public class UserServiceIpml implements UserService {
 
     @Override
     public User createUser(User user) throws ResponseStatusException {
-        if (isUsernameTaken(user.getUsername())) {
+        if (checkTaken("username", user.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already taken");
         }
 
-        if (isEmailTaken(user.getEmail())) {
+        if (checkTaken("email", user.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already taken");
         }
 
         return userRepository.save(user);
-    }
-
-    private boolean isEmailTaken(String email) {
-        Optional<User> user = userRepository.findOneByEmail(email);
-
-        if (user.isEmpty()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private boolean isUsernameTaken(String username) {
-        Optional<User> user = userRepository.findOneByUsername(username);
-
-        if (user.isEmpty()) {
-            return false;
-        }
-
-        return true;
     }
 
     @Override
@@ -79,19 +59,18 @@ public class UserServiceIpml implements UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        if (isUsernameTaken(user.getUsername())) {
+        if (checkTaken("username", user.getUsername())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username is already taken");
         }
 
-        if (isEmailTaken(user.getEmail())) {
+        if (checkTaken("email", user.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already taken");
         }
-
         return userRepository.save(user);
     }
 
-	@Override
-	public User removeUser(UUID id) throws ResponseStatusException {
+    @Override
+    public User removeUser(UUID id) throws ResponseStatusException {
         Optional<User> foundUser = userRepository.findById(id);
 
         if (foundUser.isEmpty()) {
@@ -101,6 +80,47 @@ public class UserServiceIpml implements UserService {
         userRepository.deleteById(foundUser.get().getId());
 
         return foundUser.get();
-	}
+    }
+
+    @Override
+    public User getByUsername(String username) throws ResponseStatusException {
+        Optional<User> userOptional = userRepository.findOneByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return userOptional.get();
+    }
+
+    @Override
+    public User getByEmail(String email) throws ResponseStatusException {
+        Optional<User> userOptional = userRepository.findOneByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        return userOptional.get();
+    }
+
+    @Override
+    public boolean checkTaken(String field, String value) throws ResponseStatusException {
+        boolean isTaken;
+        switch (field) {
+            case "username":
+                Optional<User> userByUsername = userRepository.findOneByUsername(value);
+                isTaken = !userByUsername.isEmpty();
+                break;
+            case "email":
+                Optional<User> userByEmail = userRepository.findOneByEmail(value);
+                isTaken = !userByEmail.isEmpty();
+                break;
+            default:
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "This field does not exist");
+        }
+
+        return isTaken;
+    }
 
 }

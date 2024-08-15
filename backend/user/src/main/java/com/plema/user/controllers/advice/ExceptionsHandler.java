@@ -1,7 +1,6 @@
 package com.plema.user.controllers.advice;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,7 +20,8 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDto> handleException(Exception ex) {
-        ExceptionDto exceptionDto = ExceptionDto.builder().message("Internal server error").statusCode(HttpStatus.INTERNAL_SERVER_ERROR)
+        ExceptionDto exceptionDto = ExceptionDto.builder().message("Internal server error")
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
         return ResponseEntity.status(500).body(exceptionDto);
 

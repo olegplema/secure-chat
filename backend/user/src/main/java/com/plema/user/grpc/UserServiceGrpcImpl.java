@@ -1,14 +1,15 @@
 package com.plema.user.grpc;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.plema.grpc.user.CreateUserRequest;
-import com.plema.grpc.user.GetUserByIdRequest;
-import com.plema.grpc.user.UserServiceGrpc.UserServiceImplBase;
+import com.plema.grpc.user.GetUserByEmailRequest;
+import com.plema.grpc.user.GetUserByUsernameRequest;
+import com.plema.grpc.user.IsFieldTakenRequest;
+import com.plema.grpc.user.IsFieldTakenResponse;
 import com.plema.grpc.user.UserResponse;
+import com.plema.grpc.user.UserServiceGrpc.UserServiceImplBase;
 import com.plema.user.entities.User;
 import com.plema.user.mappers.CreateUserRequestMapper;
 import com.plema.user.mappers.CreateUserResponseMapper;
@@ -47,10 +48,9 @@ public class UserServiceGrpcImpl extends UserServiceImplBase {
     }
 
     @Override
-    public void getUserById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
+    public void getUserByEmail(GetUserByEmailRequest request, StreamObserver<UserResponse> responseObserver) {
         try {
-            UUID id = UUID.fromString(request.getId());
-            User foundUser = userService.getById(id);
+            User foundUser = userService.getByEmail(request.getEmail());
 
             responseObserver.onNext(responseMapper.toDto(foundUser));
             responseObserver.onCompleted();
@@ -62,4 +62,34 @@ public class UserServiceGrpcImpl extends UserServiceImplBase {
         }
     }
 
+    @Override
+    public void isFieldTaken(IsFieldTakenRequest request, StreamObserver<IsFieldTakenResponse> responseObserver) {
+        try {
+            boolean isTaken = userService.checkTaken(request.getField(), request.getValue());
+
+            IsFieldTakenResponse response = IsFieldTakenResponse.newBuilder().setIsTaken(isTaken).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (ResponseStatusException e) {
+            Status status = Status.NOT_FOUND.withDescription(e.getReason());
+            responseObserver.onError(status.asRuntimeException());
+        } catch (Exception e) {
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
+    }
+
+    @Override
+    public void getUserByUsername(GetUserByUsernameRequest request, StreamObserver<UserResponse> responseObserver) {
+        try {
+            User foundUser = userService.getByUsername(request.getUsername());
+
+            responseObserver.onNext(responseMapper.toDto(foundUser));
+            responseObserver.onCompleted();
+        } catch (ResponseStatusException e) {
+            Status status = Status.NOT_FOUND.withDescription(e.getReason());
+            responseObserver.onError(status.asRuntimeException());
+        } catch (Exception e) {
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
+    }
 }

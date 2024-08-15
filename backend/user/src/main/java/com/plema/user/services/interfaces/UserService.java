@@ -17,5 +17,11 @@ public interface UserService {
 
     User removeUser(UUID id) throws ResponseStatusException;
 
-    User getById(UUID id);
+    User getById(UUID id) throws ResponseStatusException;
+
+    User getByEmail(String email) throws ResponseStatusException;
+
+    User getByUsername(String username) throws ResponseStatusException;
+
+    boolean checkTaken(String field, String value) throws ResponseStatusException;
 }
