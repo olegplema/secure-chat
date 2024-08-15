@@ -1,12 +1,15 @@
 syntax = "proto3";
 
-package com.plema.grpc;
+package com.plema.grpc.user;
 
-option java_package = "com.plema.grpc.user";
 option java_multiple_files = true;
 
-message GetUserByIdRequest {
-  string id = 1;
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message GetUserByUsernameRequest {
+  string username = 1;
 }
 
 message CreateUserRequest {
@@ -22,7 +25,19 @@ message UserResponse {
   string email = 4;
 }
 
+message IsFieldTakenRequest {
+  string field = 1;
+  string value = 2;
+}
+
+message IsFieldTakenResponse {
+  bool isTaken = 1;
+}
+
+
 service UserService {
   rpc createUser(CreateUserRequest) returns (UserResponse);
-  rpc getUserById(GetUserByIdRequest) returns (UserResponse);
+  rpc getUserByEmail(GetUserByEmailRequest) returns (UserResponse);
+  rpc getUserByUsername(GetUserByUsernameRequest) returns (UserResponse);
+  rpc isFieldTaken(IsFieldTakenRequest) returns (IsFieldTakenResponse);
 }

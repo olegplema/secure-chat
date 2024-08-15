@@ -1,8 +1,7 @@
 syntax = "proto3";
 
-package com.plema.grpc;
+package com.plema.grpc.auth;
 
-option java_package = "com.plema.grpc.auth";
 option java_multiple_files = true;
 
 message ValidateTokenRequest {

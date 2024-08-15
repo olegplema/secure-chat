@@ -9,5 +9,23 @@ grpc:
     UserService:
       address: discovery:///user-service
       negotiation-type: PLAINTEXT_UPGRADE
+security:
+  jwt:
+    secret-key: eEbDIV217sbY9dWzpS+sNj1alhDLOCqArKTTxrJQ4SU=
+    access-expiration-time: 3600000
+    email-expiration-time: 604800000
 server:
   port: 8082
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: blackonblackua@gmail.com
+    password: nmjh nmkk bmzo lvli
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
