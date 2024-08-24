@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.plema.auth.dtos.AuthResponseDto;
 import com.plema.auth.dtos.UserDto;
 import com.plema.auth.grpc.clients.interfaces.UserClient;
 import com.plema.auth.services.interfaces.AuthService;
@@ -74,12 +75,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserDto verifyUser(String token, String pubKey) {
+    public AuthResponseDto verifyUser(String token, String pubKey) {
         String username = jwtService.extractUsername(token);
-        Claims claims = jwtService.extractAllClaims();
+        Claims claims = jwtService.extractAllClaims(token);
         String email = claims.get("email", String.class);
 
-        return client.createUser(username, email, pubKey);
+        UserDto user = client.createUser(username, email, pubKey);
+        String accessToken = jwtService.generateAccessToken(user.getEmail(), user.getUsername(),
+                UUID.fromString(user.getId()));
+        String refreshToken = jwtService.generateRefreshToken(user.getEmail(), user.getUsername());
+
+        return AuthResponseDto.builder().user(user).accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     private void sendEmail(String email, String token) {

@@ -1,7 +1,6 @@
 package com.plema.auth.mappers;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 
 import io.grpc.Status;

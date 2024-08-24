@@ -24,4 +24,6 @@ public interface UserService {
     User getByUsername(String username) throws ResponseStatusException;
 
     boolean checkTaken(String field, String value) throws ResponseStatusException;
+
+    List<User> getByIds(List<UUID> ids);
 }

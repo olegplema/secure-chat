@@ -1,6 +1,6 @@
 package com.plema.auth.services.interfaces;
 
-import com.plema.auth.dtos.UserDto;
+import com.plema.auth.dtos.AuthResponseDto;
 
 public interface AuthService {
 
@@ -10,5 +10,5 @@ public interface AuthService {
 
     void sendAuthEmail(String email, String username);
 
-    UserDto verifyUser(String token, String pubKey);
+    AuthResponseDto verifyUser(String token, String pubKey);
 }

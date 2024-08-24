@@ -1,12 +1,19 @@
 package com.plema.user.grpc;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.plema.grpc.user.CreateUserRequest;
 import com.plema.grpc.user.GetUserByEmailRequest;
 import com.plema.grpc.user.GetUserByUsernameRequest;
+import com.plema.grpc.user.GetUserByIdRequest;
 import com.plema.grpc.user.IsFieldTakenRequest;
+import com.plema.grpc.user.UsersResponse;
+import com.plema.grpc.user.GetUsersByIdsRequest;
 import com.plema.grpc.user.IsFieldTakenResponse;
 import com.plema.grpc.user.UserResponse;
 import com.plema.grpc.user.UserServiceGrpc.UserServiceImplBase;
@@ -84,6 +91,49 @@ public class UserServiceGrpcImpl extends UserServiceImplBase {
             User foundUser = userService.getByUsername(request.getUsername());
 
             responseObserver.onNext(responseMapper.toDto(foundUser));
+            responseObserver.onCompleted();
+        } catch (ResponseStatusException e) {
+            Status status = Status.NOT_FOUND.withDescription(e.getReason());
+            responseObserver.onError(status.asRuntimeException());
+        } catch (Exception e) {
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
+    }
+
+    @Override
+    public void getUserById(GetUserByIdRequest request, StreamObserver<UserResponse> responseObserver) {
+        try {
+            UUID id = UUID.fromString(request.getId());
+            User foundUser = userService.getById(id);
+
+            responseObserver.onNext(responseMapper.toDto(foundUser));
+            responseObserver.onCompleted();
+        } catch (ResponseStatusException e) {
+            Status status = Status.NOT_FOUND.withDescription(e.getReason());
+            responseObserver.onError(status.asRuntimeException());
+        } catch (Exception e) {
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
+    }
+
+    @Override
+    public void getUsersByIds(GetUsersByIdsRequest request, StreamObserver<UsersResponse> responseObserver) {
+        try {
+            List<UUID> ids = request.getIdsList().stream()
+                    .map(UUID::fromString)
+                    .toList();
+
+            List<User> foundUsers = userService.getByIds(ids);
+
+            List<UserResponse> userResponses = foundUsers.stream()
+                    .map(responseMapper::toDto)
+                    .toList();
+
+            UsersResponse response = UsersResponse.newBuilder()
+                    .addAllUsers(userResponses)
+                    .build();
+
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (ResponseStatusException e) {
             Status status = Status.NOT_FOUND.withDescription(e.getReason());

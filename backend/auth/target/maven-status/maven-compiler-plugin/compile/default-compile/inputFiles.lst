@@ -6,7 +6,10 @@
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/ChallengeRequestDto.java
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/ChallengeResponseDto.java
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/ExceptionDto.java
+/Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/RegisterEmailRequestDto.java
+/Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/RegisterEmailResonseDto.java
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/UserDto.java
+/Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/dtos/VerifyUserDto.java
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/grpc/clients/UserClientImpl.java
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/grpc/clients/interfaces/UserClient.java
 /Users/oleg/Documents/secure-chat/backend/auth/src/main/java/com/plema/auth/grpc/services/AuthServiceGrpcImpl.java

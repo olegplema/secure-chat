@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.plema.auth.dtos.AuthResponseDto;
 import com.plema.auth.dtos.ChallengeRequestDto;
 import com.plema.auth.dtos.ChallengeResponseDto;
 import com.plema.auth.dtos.RegisterEmailRequestDto;
 import com.plema.auth.dtos.RegisterEmailResonseDto;
-import com.plema.auth.dtos.UserDto;
 import com.plema.auth.dtos.VerifyUserDto;
 import com.plema.auth.services.interfaces.AuthService;
 
@@ -44,8 +44,8 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<UserDto> verifyUser(@RequestBody @Valid VerifyUserDto verifyUserDto) {
-        UserDto user = authService.verifyUser(verifyUserDto.getToken(), verifyUserDto.getPubKey());
+    public ResponseEntity<AuthResponseDto> verifyUser(@RequestBody @Valid VerifyUserDto verifyUserDto) {
+        AuthResponseDto user = authService.verifyUser(verifyUserDto.getToken(), verifyUserDto.getPubKey());
 
         return ResponseEntity.status(HttpStatus.SC_OK).body(user);
     }

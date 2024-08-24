@@ -40,9 +40,10 @@ public class JwtServiceImpl implements JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateAccessToken(String email, String username) {
+    public String generateAccessToken(String email, String username, UUID id) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("email", email);
+        extraClaims.put("id", id);
         return generateToken(extraClaims, username, jwtAccessExpiration);
     }
 
@@ -114,5 +115,4 @@ public class JwtServiceImpl implements JwtService {
             return bearerToken.substring(7);
         return null;
     }
-
 }

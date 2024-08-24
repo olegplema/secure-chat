@@ -16,7 +16,9 @@ eureka:
     serviceUrl:
       defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
 grpc:
-  server:
-    reflection-service-enabled: true
+  client:
+    UserService:
+      address: discovery:///user-service
+      negotiation-type: PLAINTEXT_UPGRADE
 server:
   port: 8084
