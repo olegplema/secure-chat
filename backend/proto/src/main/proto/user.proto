@@ -4,6 +4,14 @@ package com.plema.grpc.user;
 
 option java_multiple_files = true;
 
+message GetUserByIdRequest {
+  string id = 1;
+}
+
+message GetUsersByIdsRequest {
+  repeated string ids = 1;
+}
+
 message GetUserByEmailRequest {
   string email = 1;
 }
@@ -25,6 +33,10 @@ message UserResponse {
   string email = 4;
 }
 
+message UsersResponse {
+  repeated UserResponse users = 1;
+}
+
 message IsFieldTakenRequest {
   string field = 1;
   string value = 2;
@@ -39,5 +51,7 @@ service UserService {
   rpc createUser(CreateUserRequest) returns (UserResponse);
   rpc getUserByEmail(GetUserByEmailRequest) returns (UserResponse);
   rpc getUserByUsername(GetUserByUsernameRequest) returns (UserResponse);
+  rpc getUserById(GetUserByIdRequest) returns (UserResponse);
+  rpc getUsersByIds (GetUsersByIdsRequest) returns (UsersResponse);
   rpc isFieldTaken(IsFieldTakenRequest) returns (IsFieldTakenResponse);
 }

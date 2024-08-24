@@ -123,4 +123,9 @@ public class UserServiceIpml implements UserService {
         return isTaken;
     }
 
+    @Override
+    public List<User> getByIds(List<UUID> ids) {
+        return userRepository.findAllById(ids);
+    }
+
 }

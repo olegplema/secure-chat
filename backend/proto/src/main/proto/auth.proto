@@ -5,11 +5,12 @@ package com.plema.grpc.auth;
 option java_multiple_files = true;
 
 message ValidateTokenRequest {
-  string accessToken = 1;
+  string token = 1;
 }
 
 message ValidateTokenResponse {
   bool isValid = 1;
+  string userId = 2;
 }
 
 service AuthService {

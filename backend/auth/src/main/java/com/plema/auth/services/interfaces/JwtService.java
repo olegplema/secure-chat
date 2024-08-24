@@ -13,7 +13,7 @@ public interface JwtService {
 
     <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
-    String generateAccessToken(String email, String username);
+    String generateAccessToken(String email, String username, UUID id);
 
     String generateRefreshToken(String email, String username);
 
@@ -23,5 +23,5 @@ public interface JwtService {
 
     String generateEmailToken(UUID userId) throws Exception;
 
-    Claims extractAllClaims();
+    Claims extractAllClaims(String token);
 }
